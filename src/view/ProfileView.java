@@ -32,13 +32,11 @@ public class ProfileView extends JFrame {
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         mainPanel.setBackground(AppColors.BACKGROUND);
 
-        // Header
         JLabel headerLabel = new JLabel("Edit Profile", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         headerLabel.setForeground(AppColors.PRIMARY);
         mainPanel.add(headerLabel, BorderLayout.NORTH);
 
-        // Form panel
         JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 15));
         formPanel.setBackground(AppColors.BACKGROUND);
 
@@ -56,7 +54,7 @@ public class ProfileView extends JFrame {
         formPanel.add(usernameField);
         formPanel.add(passwordLabel);
         formPanel.add(passwordField);
-        formPanel.add(new JLabel()); // Empty cell for alignment
+        formPanel.add(new JLabel());
 
         updateButton = new JButton("Save Changes");
         updateButton.setBackground(AppColors.TEXT);

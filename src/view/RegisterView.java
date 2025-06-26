@@ -66,8 +66,12 @@ public class RegisterView extends JFrame {
 
         registerButton = new JButton("Register");
         registerButton.setBackground(AppColors.PRIMARY);
-        registerButton.setForeground(Color.WHITE);
+        registerButton.setForeground(AppColors.BUTTON_TEXT);
         registerButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        registerButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(AppColors.BUTTON_BORDER, 1),
+                BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -77,8 +81,12 @@ public class RegisterView extends JFrame {
 
         cancelButton = new JButton("Cancel");
         cancelButton.setBackground(AppColors.SECONDARY);
-        cancelButton.setForeground(Color.WHITE);
+        cancelButton.setForeground(AppColors.BUTTON_TEXT);
         cancelButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        cancelButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(AppColors.BUTTON_BORDER, 1),
+                BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

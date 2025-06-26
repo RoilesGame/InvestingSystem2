@@ -18,7 +18,6 @@ public class SecurityPaper {
         this.quote = quote;
     }
 
-    // Геттеры и сеттеры
     public int getSecurityPaperId() {
         return securityPaperId;
     }

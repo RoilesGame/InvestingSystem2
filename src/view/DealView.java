@@ -30,18 +30,15 @@ public class DealView extends JFrame {
         setLocationRelativeTo(null);
         getContentPane().setBackground(AppColors.BACKGROUND);
 
-        // Main panel
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         mainPanel.setBackground(AppColors.BACKGROUND);
 
-        // Header
         JLabel headerLabel = new JLabel("Deal Management", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         headerLabel.setForeground(AppColors.PRIMARY);
         mainPanel.add(headerLabel, BorderLayout.NORTH);
 
-        // Table setup
         tableModel = new DefaultTableModel(new Object[]{"ID", "Client ID", "Deposit ID"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -94,16 +91,14 @@ public class DealView extends JFrame {
             for (Deal deal : controller.getAllDeals()) {
                 tableModel.addRow(new Object[]{
                         deal.getDealId(),
-                        "Client " + deal.getClientId(),
-                        "Deposit " + deal.getDepositId(),
-                        deal.getSecurityPaperId() != null ?
-                                "Security Paper " + deal.getSecurityPaperId() : "N/A"
+                        deal.getClientId(),
+                        deal.getDepositId()
                 });
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error loading deals: " + e.getMessage(),
+            JOptionPane.showMessageDialog(this,
+                    "Error loading deals: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -151,23 +146,22 @@ public class DealView extends JFrame {
         if (selectedRow >= 0) {
             try {
                 int dealId = (int) tableModel.getValueAt(selectedRow, 0);
-                int clientId = (int) tableModel.getValueAt(selectedRow, 1);
-                int depositId = (int) tableModel.getValueAt(selectedRow, 2);
+                int clientId = Integer.parseInt(tableModel.getValueAt(selectedRow, 1).toString());
+                int depositId = Integer.parseInt(tableModel.getValueAt(selectedRow, 2).toString());
 
-                Object spIdObj = tableModel.getValueAt(selectedRow, 3);
-                Integer securityPaperId = (spIdObj instanceof Integer) ? (Integer)spIdObj : null;
-
-                Deal updatedDeal = new Deal(dealId, clientId, depositId, securityPaperId);
+                Deal updatedDeal = new Deal(dealId, clientId, depositId, null);
 
                 if (controller.updateDeal(updatedDeal)) {
                     JOptionPane.showMessageDialog(this, "Deal updated successfully");
                 }
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error updating deal: " + ex.getMessage(),
+                JOptionPane.showMessageDialog(this,
+                        "Error updating deal. Check that all IDs are numbers.\n" + ex.getMessage(),
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Please select a deal to edit",
+            JOptionPane.showMessageDialog(this,
+                    "Please select a deal to edit",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
