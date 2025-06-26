@@ -3,7 +3,6 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import controller.UserController;
 import model.User;
 
@@ -12,58 +11,85 @@ public class LoginView extends JFrame {
     private JPasswordField passwordField;
     private JButton loginButton;
     private JButton registerButton;
-    private UserController userController;
 
     public LoginView() {
-        userController = new UserController();
         initializeUI();
     }
 
     private void initializeUI() {
-        setTitle("Login");
-        setSize(300, 200);
+        setTitle("Financial Service - Login");
+        setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        getContentPane().setBackground(AppColors.BACKGROUND);
 
-        JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainPanel.setBackground(AppColors.BACKGROUND);
 
-        panel.add(new JLabel("Username:"));
+        JLabel headerLabel = new JLabel("Financial Service", SwingConstants.CENTER);
+        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        headerLabel.setForeground(AppColors.PRIMARY);
+        mainPanel.add(headerLabel, BorderLayout.NORTH);
+
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        formPanel.setBackground(AppColors.BACKGROUND);
+
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setForeground(AppColors.TEXT);
         usernameField = new JTextField();
-        panel.add(usernameField);
-
-        panel.add(new JLabel("Password:"));
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setForeground(AppColors.TEXT);
         passwordField = new JPasswordField();
-        panel.add(passwordField);
 
-        loginButton = new JButton("Login");
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
+        formPanel.add(usernameLabel);
+        formPanel.add(usernameField);
+        formPanel.add(passwordLabel);
+        formPanel.add(passwordField);
 
-                User user = userController.authenticate(username, password);
-                if (user != null) {
-                    dispose();
-                    new MainView(user).setVisible(true);
-                } else {
-                    JOptionPane.showMessageDialog(LoginView.this,
-                            "Invalid username or password", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-        panel.add(loginButton);
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+        buttonPanel.setBackground(AppColors.BACKGROUND);
 
-        registerButton = new JButton("Register");
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new RegisterView().setVisible(true);
-            }
-        });
-        panel.add(registerButton);
+        loginButton = createStyledButton("Login", AppColors.PRIMARY);
+        loginButton.addActionListener(this::handleLogin);
 
-        add(panel);
+        registerButton = createStyledButton("Register", AppColors.SECONDARY);
+        registerButton.addActionListener(e -> new RegisterView().setVisible(true));
+
+        buttonPanel.add(loginButton);
+        buttonPanel.add(registerButton);
+
+        mainPanel.add(formPanel, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        add(mainPanel);
+    }
+
+    private JButton createStyledButton(String text, Color color) {
+        JButton button = new JButton(text);
+        button.setBackground(color);
+        button.setForeground(AppColors.BUTTON_TEXT);
+        button.setFocusPainted(false);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(AppColors.PRIMARY.darker(), 1),
+                BorderFactory.createEmptyBorder(10, 20, 10, 20)
+        ));
+        return button;
+    }
+
+    private void handleLogin(ActionEvent e) {
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+
+        User user = new UserController().authenticate(username, password);
+        if (user != null) {
+            dispose();
+            new MainView(user).setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Invalid username or password", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

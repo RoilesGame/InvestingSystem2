@@ -19,8 +19,7 @@ public class CompanyController {
                 companies.add(new Company(
                         rs.getInt("company_id"),
                         rs.getInt("client_id"),
-                        rs.getObject("deposit_id") == null ? null : rs.getInt("deposit_id"),
-                        rs.getObject("security_paper_id") == null ? null : rs.getInt("security_paper_id")
+                        rs.getObject("deposit_id") == null ? null : rs.getInt("deposit_id")
                 ));
             }
         } catch (SQLException e) {
@@ -55,22 +54,27 @@ public class CompanyController {
     }
 
     public boolean updateCompany(Company company) {
-        String sql = "UPDATE company SET client_id = ?, deposit_id = ?, security_paper_id = ? WHERE company_id = ?";
+        String sql = "UPDATE company SET client_id=?, deposit_id=?, security_paper_id=? WHERE company_id=?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, company.getClientId());
+
+            // Обработка null значений для deposit_id
             if (company.getDepositId() != null) {
                 pstmt.setInt(2, company.getDepositId());
             } else {
                 pstmt.setNull(2, Types.INTEGER);
             }
+
+            // Обработка null значений для security_paper_id
             if (company.getSecurityPaperId() != null) {
                 pstmt.setInt(3, company.getSecurityPaperId());
             } else {
                 pstmt.setNull(3, Types.INTEGER);
             }
+
             pstmt.setInt(4, company.getCompanyId());
 
             return pstmt.executeUpdate() > 0;

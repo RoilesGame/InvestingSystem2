@@ -12,55 +12,112 @@ public class RegisterView extends JFrame {
     private JPasswordField passwordField;
     private JComboBox<String> roleComboBox;
     private JButton registerButton;
-    private UserController userController;
+    private JButton cancelButton;
 
     public RegisterView() {
-        userController = new UserController();
         initializeUI();
     }
 
     private void initializeUI() {
-        setTitle("Register");
-        setSize(300, 200);
+        setTitle("Registration");
+        setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        getContentPane().setBackground(AppColors.BACKGROUND);
 
-        JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainPanel.setBackground(AppColors.BACKGROUND);
 
-        panel.add(new JLabel("Username:"));
+        JLabel headerLabel = new JLabel("Create New Account", SwingConstants.CENTER);
+        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        headerLabel.setForeground(AppColors.PRIMARY);
+        mainPanel.add(headerLabel, BorderLayout.NORTH);
+
+        JPanel formPanel = new JPanel(new GridLayout(4, 2, 10, 15));
+        formPanel.setBackground(AppColors.BACKGROUND);
+
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         usernameField = new JTextField();
-        panel.add(usernameField);
+        usernameField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        panel.add(new JLabel("Password:"));
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         passwordField = new JPasswordField();
-        panel.add(passwordField);
+        passwordField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        panel.add(new JLabel("Role:"));
-        roleComboBox = new JComboBox<>(new String[]{"user", "admin"});
-        panel.add(roleComboBox);
+        JLabel roleLabel = new JLabel("Role:");
+        roleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        String[] roles = {"user", "admin"};
+        roleComboBox = new JComboBox<>(roles);
+        roleComboBox.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+        formPanel.add(usernameLabel);
+        formPanel.add(usernameField);
+        formPanel.add(passwordLabel);
+        formPanel.add(passwordField);
+        formPanel.add(roleLabel);
+        formPanel.add(roleComboBox);
+        formPanel.add(new JLabel());
+
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 15, 0));
+        buttonPanel.setBackground(AppColors.BACKGROUND);
 
         registerButton = new JButton("Register");
+        registerButton.setBackground(AppColors.PRIMARY);
+        registerButton.setForeground(Color.WHITE);
+        registerButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
-                String role = (String) roleComboBox.getSelectedItem();
-
-                User user = new User(username, password, role);
-                if (userController.registerUser(user)) {
-                    JOptionPane.showMessageDialog(RegisterView.this,
-                            "Registration successful", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(RegisterView.this,
-                            "Registration failed", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                registerUser();
             }
         });
-        panel.add(registerButton);
 
-        add(panel);
+        cancelButton = new JButton("Cancel");
+        cancelButton.setBackground(AppColors.SECONDARY);
+        cancelButton.setForeground(Color.WHITE);
+        cancelButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+
+        buttonPanel.add(registerButton);
+        buttonPanel.add(cancelButton);
+        formPanel.add(buttonPanel);
+
+        mainPanel.add(formPanel, BorderLayout.CENTER);
+        add(mainPanel);
+    }
+
+    private void registerUser() {
+        String username = usernameField.getText().trim();
+        String password = new String(passwordField.getPassword());
+        String role = (String) roleComboBox.getSelectedItem();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Username and password cannot be empty",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        User newUser = new User(username, password, role);
+        UserController userController = new UserController();
+
+        if (userController.registerUser(newUser)) {
+            JOptionPane.showMessageDialog(this,
+                    "Registration successful! Please login.",
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Registration failed. Username may already exist.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

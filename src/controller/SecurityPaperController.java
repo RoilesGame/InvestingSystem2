@@ -18,7 +18,8 @@ public class SecurityPaperController {
             while (rs.next()) {
                 papers.add(new SecurityPaper(
                         rs.getInt("security_paper_id"),
-                        rs.getString("type")
+                        rs.getString("type"),
+                        rs.getBigDecimal("quote")
                 ));
             }
         } catch (SQLException e) {
@@ -28,12 +29,13 @@ public class SecurityPaperController {
     }
 
     public boolean addSecurityPaper(SecurityPaper paper) {
-        String sql = "INSERT INTO security_paper (type) VALUES (?)";
+        String sql = "INSERT INTO security_paper (type, quote) VALUES (?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, paper.getType());
+            pstmt.setBigDecimal(2, paper.getQuote());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -42,13 +44,14 @@ public class SecurityPaperController {
     }
 
     public boolean updateSecurityPaper(SecurityPaper paper) {
-        String sql = "UPDATE security_paper SET type = ? WHERE security_paper_id = ?";
+        String sql = "UPDATE security_paper SET type = ?, quote = ? WHERE security_paper_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, paper.getType());
-            pstmt.setInt(2, paper.getSecurityPaperId());
+            pstmt.setBigDecimal(2, paper.getQuote());
+            pstmt.setInt(3, paper.getSecurityPaperId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

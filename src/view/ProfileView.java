@@ -22,27 +22,51 @@ public class ProfileView extends JFrame {
     }
 
     private void initializeUI() {
-        setTitle("Profile");
-        setSize(300, 200);
+        setTitle("Profile Settings");
+        setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        getContentPane().setBackground(AppColors.BACKGROUND);
 
-        JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainPanel.setBackground(AppColors.BACKGROUND);
 
-        panel.add(new JLabel("Username:"));
+        // Header
+        JLabel headerLabel = new JLabel("Edit Profile", SwingConstants.CENTER);
+        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        headerLabel.setForeground(AppColors.PRIMARY);
+        mainPanel.add(headerLabel, BorderLayout.NORTH);
+
+        // Form panel
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 15));
+        formPanel.setBackground(AppColors.BACKGROUND);
+
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         usernameField = new JTextField(currentUser.getUsername());
-        panel.add(usernameField);
+        usernameField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        panel.add(new JLabel("Password:"));
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         passwordField = new JPasswordField(currentUser.getPassword());
-        panel.add(passwordField);
+        passwordField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        updateButton = new JButton("Update");
+        formPanel.add(usernameLabel);
+        formPanel.add(usernameField);
+        formPanel.add(passwordLabel);
+        formPanel.add(passwordField);
+        formPanel.add(new JLabel()); // Empty cell for alignment
+
+        updateButton = new JButton("Save Changes");
+        updateButton.setBackground(AppColors.TEXT);
+        updateButton.setForeground(AppColors.TEXT);
+        updateButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         updateButton.addActionListener(this::handleUpdate);
-        panel.add(updateButton);
+        formPanel.add(updateButton);
 
-        add(panel);
+        mainPanel.add(formPanel, BorderLayout.CENTER);
+        add(mainPanel);
     }
 
     private void handleUpdate(ActionEvent e) {

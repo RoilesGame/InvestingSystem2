@@ -42,9 +42,9 @@ public class CompanyView extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        addButton = new JButton("Add");
-        editButton = new JButton("Edit");
-        deleteButton = new JButton("Delete");
+        addButton = createStyledButton("Add", new Color(220, 240, 255));
+        editButton = createStyledButton("Edit", new Color(220, 255, 220));
+        deleteButton = createStyledButton("Delete", new Color(255, 220, 220));
 
         addButton.addActionListener(this::addCompany);
         editButton.addActionListener(this::editCompany);
@@ -56,6 +56,19 @@ public class CompanyView extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    private JButton createStyledButton(String text, Color bgColor) {
+        JButton button = new JButton(text);
+        button.setBackground(bgColor);
+        button.setForeground(AppColors.BUTTON_TEXT);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(AppColors.BUTTON_BORDER, 1),
+                BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
+        button.setFocusPainted(false);
+        return button;
+    }
+
     private void setupAccessControls() {
         boolean isAdmin = currentUser.getRole().equals("admin");
         addButton.setEnabled(isAdmin);
@@ -65,13 +78,19 @@ public class CompanyView extends JFrame {
 
     private void loadCompanyData() {
         tableModel.setRowCount(0);
-        for (Company company : controller.getAllCompanies()) {
-            tableModel.addRow(new Object[]{
-                    company.getCompanyId(),
-                    company.getClientId(),
-                    company.getDepositId(),
-                    company.getSecurityPaperId()
-            });
+        try {
+            for (Company company : controller.getAllCompanies()) {
+                tableModel.addRow(new Object[]{
+                        company.getCompanyId(),
+                        company.getClientId(),
+                        company.getDepositId() != null ? company.getDepositId() : "N/A",
+                        company.getSecurityPaperId() != null ? company.getSecurityPaperId() : "N/A"
+                });
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error loading companies: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 
@@ -114,15 +133,28 @@ public class CompanyView extends JFrame {
     private void editCompany(ActionEvent e) {
         int selectedRow = companyTable.getSelectedRow();
         if (selectedRow >= 0) {
-            Company updatedCompany = new Company(
-                    (int) tableModel.getValueAt(selectedRow, 0),
-                    (int) tableModel.getValueAt(selectedRow, 1),
-                    tableModel.getValueAt(selectedRow, 2) == null ? null : (int) tableModel.getValueAt(selectedRow, 2),
-                    tableModel.getValueAt(selectedRow, 3) == null ? null : (int) tableModel.getValueAt(selectedRow, 3)
-            );
+            try {
+                int companyId = (int) tableModel.getValueAt(selectedRow, 0);
+                int clientId = (int) tableModel.getValueAt(selectedRow, 1);
 
-            if (controller.updateCompany(updatedCompany)) {
-                JOptionPane.showMessageDialog(this, "Company updated successfully");
+                Object depositIdObj = tableModel.getValueAt(selectedRow, 2);
+                Integer depositId = (depositIdObj != null && !depositIdObj.toString().equals("N/A"))
+                        ? Integer.parseInt(depositIdObj.toString()) : null;
+
+                Object securityPaperIdObj = tableModel.getValueAt(selectedRow, 3);
+                Integer securityPaperId = (securityPaperIdObj != null && !securityPaperIdObj.toString().equals("N/A"))
+                        ? Integer.parseInt(securityPaperIdObj.toString()) : null;
+
+                Company updatedCompany = new Company(companyId, clientId, depositId, securityPaperId);
+
+                if (controller.updateCompany(updatedCompany)) {
+                    JOptionPane.showMessageDialog(this, "Company updated successfully");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to update company", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
             }
         } else {
             JOptionPane.showMessageDialog(this, "Please select a company to edit", "Error", JOptionPane.ERROR_MESSAGE);

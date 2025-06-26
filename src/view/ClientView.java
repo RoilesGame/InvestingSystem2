@@ -25,9 +25,14 @@ public class ClientView extends JFrame {
 
     private void initializeUI() {
         setTitle("Client Management");
-        setSize(800, 600);
+        setSize(900, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        getContentPane().setBackground(AppColors.BACKGROUND);
+
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mainPanel.setBackground(AppColors.BACKGROUND);
 
         tableModel = new DefaultTableModel() {
             @Override
@@ -38,13 +43,23 @@ public class ClientView extends JFrame {
         tableModel.setColumnIdentifiers(new String[]{"ID", "Title", "Address", "Phone", "Type"});
 
         clientTable = new JTable(tableModel);
-        JScrollPane scrollPane = new JScrollPane(clientTable);
-        add(scrollPane, BorderLayout.CENTER);
+        clientTable.setSelectionBackground(AppColors.SECONDARY);
+        clientTable.setSelectionForeground(Color.WHITE);
+        clientTable.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        clientTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        clientTable.getTableHeader().setBackground(AppColors.PRIMARY);
+        clientTable.getTableHeader().setForeground(Color.WHITE);
 
-        JPanel buttonPanel = new JPanel();
-        addButton = new JButton("Add");
-        editButton = new JButton("Edit");
-        deleteButton = new JButton("Delete");
+        JScrollPane scrollPane = new JScrollPane(clientTable);
+        scrollPane.setBorder(BorderFactory.createLineBorder(AppColors.PRIMARY, 1));
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonPanel.setBackground(AppColors.BACKGROUND);
+
+        addButton = createStyledButton("Add", new Color(220, 240, 255));
+        editButton = createStyledButton("Edit", new Color(220, 255, 220));
+        deleteButton = createStyledButton("Delete", new Color(255, 220, 220));
 
         addButton.addActionListener(this::addClient);
         editButton.addActionListener(this::editClient);
@@ -53,7 +68,22 @@ public class ClientView extends JFrame {
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
-        add(buttonPanel, BorderLayout.SOUTH);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        add(mainPanel);
+    }
+
+    private JButton createStyledButton(String text, Color bgColor) {
+        JButton button = new JButton(text);
+        button.setBackground(bgColor);
+        button.setForeground(AppColors.BUTTON_TEXT);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(AppColors.BUTTON_BORDER, 1),
+                BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
+        button.setFocusPainted(false);
+        return button;
     }
 
     private void setupAccessControls() {
