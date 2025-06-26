@@ -7,7 +7,6 @@ public class Client {
     private String phoneNumber;
     private String typeProperty;
 
-    // Конструктор для создания нового клиента (без ID)
     public Client(String title, String address, String phoneNumber, String typeProperty) {
         this.title = title;
         this.address = address;
@@ -15,7 +14,6 @@ public class Client {
         this.typeProperty = typeProperty;
     }
 
-    // Конструктор для существующего клиента (с ID)
     public Client(int clientId, String title, String address, String phoneNumber, String typeProperty) {
         this.clientId = clientId;
         this.title = title;
@@ -24,7 +22,6 @@ public class Client {
         this.typeProperty = typeProperty;
     }
 
-    // Геттеры и сеттеры
     public int getClientId() {
         return clientId;
     }

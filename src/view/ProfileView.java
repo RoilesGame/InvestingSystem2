@@ -30,17 +30,14 @@ public class ProfileView extends JFrame {
         JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Username field
         panel.add(new JLabel("Username:"));
         usernameField = new JTextField(currentUser.getUsername());
         panel.add(usernameField);
 
-        // Password field
         panel.add(new JLabel("Password:"));
         passwordField = new JPasswordField(currentUser.getPassword());
         panel.add(passwordField);
 
-        // Update button
         updateButton = new JButton("Update");
         updateButton.addActionListener(this::handleUpdate);
         panel.add(updateButton);
@@ -61,7 +58,7 @@ public class ProfileView extends JFrame {
         currentUser.setPassword(newPassword);
 
         if (userController.updateUser(currentUser)) {
-            // Refresh user data from DB
+
             User updatedUser = userController.getUserById(currentUser.getUserId());
             if (updatedUser != null) {
                 currentUser.setUsername(updatedUser.getUsername());
@@ -70,7 +67,7 @@ public class ProfileView extends JFrame {
             }
 
             JOptionPane.showMessageDialog(this, "Profile updated successfully");
-            onProfileUpdate.run(); // Trigger welcome message update
+            onProfileUpdate.run();
             dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Failed to update profile", "Error", JOptionPane.ERROR_MESSAGE);

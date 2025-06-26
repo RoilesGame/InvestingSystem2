@@ -20,10 +20,8 @@ public class MainView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Create menu bar
         JMenuBar menuBar = new JMenuBar();
 
-        // File menu
         JMenu fileMenu = new JMenu("File");
         JMenuItem profileItem = new JMenuItem("Profile");
         JMenuItem exitItem = new JMenuItem("Exit");
@@ -38,10 +36,8 @@ public class MainView extends JFrame {
         fileMenu.addSeparator();
         fileMenu.add(exitItem);
 
-        // Data menu (role-based)
         JMenu dataMenu = new JMenu("Data");
 
-        // Add menu items based on role
         if (currentUser.getRole().equals("admin")) {
             dataMenu.add(new JMenuItem("Clients")).addActionListener(e -> new ClientView(currentUser).setVisible(true));
             dataMenu.add(new JMenuItem("Companies")).addActionListener(e -> new CompanyView(currentUser).setVisible(true));

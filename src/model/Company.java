@@ -19,7 +19,6 @@ public class Company {
         this.securityPaperId = securityPaperId;
     }
 
-    // Геттеры и сеттеры
     public int getCompanyId() {
         return companyId;
     }

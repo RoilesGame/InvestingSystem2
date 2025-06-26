@@ -15,7 +15,6 @@ public class User {
         this.role = role;
     }
 
-    // Геттеры и сеттеры
     public int getUserId() {
         return userId;
     }

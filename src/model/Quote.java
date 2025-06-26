@@ -9,14 +9,12 @@ public class Quote {
     private BigDecimal price;
     private int securityPaperId;
 
-    // Конструктор для создания новой котировки (без ID)
     public Quote(Timestamp timestamp, BigDecimal price, int securityPaperId) {
         this.timestamp = timestamp;
         this.price = price;
         this.securityPaperId = securityPaperId;
     }
 
-    // Конструктор для существующей котировки (с ID)
     public Quote(int quoteId, Timestamp timestamp, BigDecimal price, int securityPaperId) {
         this.quoteId = quoteId;
         this.timestamp = timestamp;
@@ -24,7 +22,6 @@ public class Quote {
         this.securityPaperId = securityPaperId;
     }
 
-    // Геттеры и сеттеры
     public int getQuoteId() {
         return quoteId;
     }
